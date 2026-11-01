@@ -1,38 +1,105 @@
 // Elite Prime Clean — small site helpers
 (function () {
+  // ===== CONFIG =====
+  // Paste the Google Apps Script "Web app" URL here (see SETUP-PLANILHA.md).
+  var SHEETS_URL = "";
+  var PHONE = "+19733916392";
+  var PHONE_DISPLAY = "(973) 391-6392";
   var CONTACT_EMAIL = "contact@eliteprimeclean.com";
+  // On phones, open the SMS app with a ready-made message right after the form is saved.
+  var AUTO_OPEN_SMS_ON_MOBILE = true;
+  // ==================
 
-  // Footer year
+  var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
   document.querySelectorAll("[data-year]").forEach(function (el) {
     el.textContent = new Date().getFullYear();
   });
 
-  // Quote forms: no backend yet, so the form opens the visitor's
-  // email app with every field filled in, addressed to the company.
-  // TODO: connect a form service (e.g. Formspree) so leads arrive without email apps.
+  function smsLink(body) {
+    // "?&body=" works on both iOS and Android
+    return "sms:" + PHONE + "?&body=" + encodeURIComponent(body);
+  }
+
+  function collect(form) {
+    var data = new FormData(form);
+    var out = {};
+    form.querySelectorAll("[name]").forEach(function (field) {
+      var label = form.querySelector('label[for="' + field.id + '"]');
+      var key = label ? label.textContent.replace(/\s*\(optional\)\s*/i, "").trim() : field.name;
+      out[key] = (data.get(field.name) || "").toString().trim();
+    });
+    return out;
+  }
+
+  function smsMessage(type, d) {
+    var name = d["Your name"] || "";
+    if (type === "Commercial") {
+      var company = d["Company"] ? " from " + d["Company"] : "";
+      return "Hi, this is " + name + company + ". I just requested a walkthrough on your website.";
+    }
+    return "Hi, this is " + name + ". I just requested a home cleaning quote on your website.";
+  }
+
+  function showThanks(form, type, d) {
+    var first = (d["Your name"] || "").split(" ")[0];
+    var body = smsMessage(type, d);
+    form.innerHTML =
+      '<div class="form-done">' +
+        '<div class="done-icon" aria-hidden="true">✓</div>' +
+        "<h3>Thanks" + (first ? ", " + escapeHtml(first) : "") + "! We got your request.</h3>" +
+        "<p>Want a faster answer? Send us a text or give us a call now.</p>" +
+        '<div class="done-actions">' +
+          '<a class="btn btn-gold" href="' + smsLink(body) + '">Text us now</a>' +
+          '<a class="btn btn-dark" href="tel:' + PHONE + '">Call ' + PHONE_DISPLAY + "</a>" +
+        "</div>" +
+      "</div>";
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (isMobile && AUTO_OPEN_SMS_ON_MOBILE) {
+      setTimeout(function () { window.location.href = smsLink(body); }, 900);
+    }
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
   document.querySelectorAll("form[data-quote-form]").forEach(function (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
 
       var type = form.getAttribute("data-quote-form");
-      var data = new FormData(form);
-      var lines = [];
-      form.querySelectorAll("[name]").forEach(function (field) {
-        var label = form.querySelector('label[for="' + field.id + '"]');
-        var value = (data.get(field.name) || "").toString().trim();
-        if (value) lines.push((label ? label.textContent : field.name) + ": " + value);
-      });
+      var d = collect(form);
+      var btn = form.querySelector('button[type="submit"]');
 
-      var subject = type + " cleaning quote request — " + (data.get("name") || "");
-      var href = "mailto:" + CONTACT_EMAIL +
-        "?subject=" + encodeURIComponent(subject) +
-        "&body=" + encodeURIComponent(lines.join("\n"));
+      // Sheet not connected yet: fall back to the visitor's email app.
+      if (!SHEETS_URL) {
+        var lines = Object.keys(d).filter(function (k) { return d[k]; }).map(function (k) { return k + ": " + d[k]; });
+        window.location.href = "mailto:" + CONTACT_EMAIL +
+          "?subject=" + encodeURIComponent(type + " cleaning quote request — " + (d["Your name"] || "")) +
+          "&body=" + encodeURIComponent(lines.join("\n"));
+        showThanks(form, type, d);
+        return;
+      }
 
-      window.location.href = href;
+      btn.disabled = true;
+      btn.textContent = "Sending…";
 
-      var status = form.querySelector(".form-status");
-      if (status) status.classList.add("show");
+      var payload = new URLSearchParams();
+      payload.append("Type", type);
+      payload.append("Page", location.pathname);
+      Object.keys(d).forEach(function (k) { payload.append(k, d[k]); });
+
+      fetch(SHEETS_URL, { method: "POST", mode: "no-cors", body: payload })
+        .then(function () { showThanks(form, type, d); })
+        .catch(function () {
+          btn.disabled = false;
+          btn.textContent = "Try again";
+          alert("Sorry, something went wrong. Please call or text us at " + PHONE_DISPLAY + ".");
+        });
     });
   });
 })();
