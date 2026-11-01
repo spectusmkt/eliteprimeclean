@@ -6,8 +6,8 @@
   var PHONE = "+19733916392";
   var PHONE_DISPLAY = "(973) 391-6392";
   var CONTACT_EMAIL = "contact@eliteprimeclean.com";
-  // On phones, open the SMS app with a ready-made message right after the form is saved.
-  var AUTO_OPEN_SMS_ON_MOBILE = true;
+  // On phones, open the dialer with our number right after the form is saved.
+  var AUTO_OPEN_CALL_ON_MOBILE = true;
   // ==================
 
   var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -41,22 +41,22 @@
     return "Hi, this is " + name + ". I just requested a home cleaning quote on your website.";
   }
 
-  function showThanks(form, type, d) {
+  function showThanks(form, type, d, skipAutoCall) {
     var first = (d["Your name"] || "").split(" ")[0];
     var body = smsMessage(type, d);
     form.innerHTML =
       '<div class="form-done">' +
         '<div class="done-icon" aria-hidden="true">✓</div>' +
         "<h3>Thanks" + (first ? ", " + escapeHtml(first) : "") + "! We got your request.</h3>" +
-        "<p>Want a faster answer? Send us a text or give us a call now.</p>" +
+        "<p>Want an answer right now? Give us a call.</p>" +
         '<div class="done-actions">' +
-          '<a class="btn btn-gold" href="' + smsLink(body) + '">Text us now</a>' +
-          '<a class="btn btn-dark" href="tel:' + PHONE + '">Call ' + PHONE_DISPLAY + "</a>" +
+          '<a class="btn btn-gold" href="tel:' + PHONE + '">Call ' + PHONE_DISPLAY + "</a>" +
+          '<a class="btn btn-outline" href="' + smsLink(body) + '">Or send a text</a>' +
         "</div>" +
       "</div>";
     form.scrollIntoView({ behavior: "smooth", block: "center" });
-    if (isMobile && AUTO_OPEN_SMS_ON_MOBILE) {
-      setTimeout(function () { window.location.href = smsLink(body); }, 900);
+    if (isMobile && AUTO_OPEN_CALL_ON_MOBILE && !skipAutoCall) {
+      setTimeout(function () { window.location.href = "tel:" + PHONE; }, 1200);
     }
   }
 
@@ -81,7 +81,7 @@
         window.location.href = "mailto:" + CONTACT_EMAIL +
           "?subject=" + encodeURIComponent(type + " cleaning quote request — " + (d["Your name"] || "")) +
           "&body=" + encodeURIComponent(lines.join("\n"));
-        showThanks(form, type, d);
+        showThanks(form, type, d, true);
         return;
       }
 
