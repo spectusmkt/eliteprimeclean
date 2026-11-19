@@ -419,3 +419,39 @@ h1 .accent { background: linear-gradient(100deg, var(--gold-light), var(--gold) 
 .on-dark .form h3, .form h3 { color: var(--ink); }
 @media (max-width: 560px) { .hero-form .form-row { grid-template-columns: 1fr 1fr; gap: .7rem; } }
 @media (max-width: 360px) { .hero-form .form-row { grid-template-columns: 1fr; } }
+
+/* ===== Home: indexable content below the chooser ===== */
+.home-more { position: relative; z-index: 2; background: var(--paper); color: var(--text); }
+.home-more .container.narrow { max-width: 820px; }
+.home-more .fact strong { display: block; color: var(--ink); font-size: 1.1rem; margin-bottom: .35rem; }
+.home-more .fact strong::before { content: "✦ "; color: var(--gold); }
+.home-more .fact p { margin: 0; color: var(--muted); }
+.svc-card { display: flex; flex-direction: column; }
+.svc-card p { color: var(--muted); }
+.svc-card ul { list-style: none; padding: 0; margin: .4rem 0 1.4rem; display: grid; gap: .5rem; flex: 1; align-content: start; }
+.svc-card li { padding-left: 1.5rem; position: relative; color: var(--text); }
+.svc-card li::before { content: "✓"; position: absolute; left: 0; color: var(--gold-dark); font-weight: 700; }
+.svc-card .more { font-weight: 600; color: var(--gold-dark); text-decoration: none; }
+.svc-card .more:hover { text-decoration: underline; }
+.home-more .faq a { color: var(--ink); font-weight: 600; }
+.home-cta { text-align: center; }
+.home-cta .lead { margin: 0 auto 1.6rem; }
+.home-cta .btn-call svg { width: 20px; height: 20px; }
+.btn-lg { padding: 1.05rem 1.9rem; font-size: 1.1rem; }
+.cta-alt { margin: 1rem 0 0; color: #c9c5bc; font-size: .95rem; }
+.cta-alt a { color: var(--gold-light); font-weight: 600; white-space: nowrap; }
+.chooser-page .site-footer { position: relative; z-index: 2; }
+
+/* ===== Privacy policy / text pages ===== */
+.prose { max-width: 760px; }
+.prose h1 { margin-top: .4rem; }
+.prose h2 { font-size: 1.35rem; margin-top: 2.2rem; }
+.prose .updated { color: var(--muted); font-size: .92rem; margin-top: -.2rem; }
+.prose p, .prose li { color: var(--text); line-height: 1.7; }
+.prose ul { padding-left: 1.2rem; }
+.prose li { margin-bottom: .4rem; }
+.prose a { color: var(--gold-dark); font-weight: 600; overflow-wrap: anywhere; }
+.footer-bottom a { color: inherit; }
+.form-privacy { font-size: .75rem; color: var(--muted); text-align: center; margin: .5rem 0 0; }
+.form-privacy a { color: inherit; text-decoration: underline; }
+.form-note a { white-space: nowrap; }
