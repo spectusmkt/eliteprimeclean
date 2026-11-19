@@ -34,11 +34,11 @@
     if (type === "Commercial") {
       var company = d["Company"] ? " from " + d["Company"] : "";
       var space = d["Type of space"] ? " for a " + d["Type of space"].toLowerCase() : "";
-      return "Hi Geovana, this is " + name + company + ". I'd like a cleaning walkthrough" + space + ".";
+      return "Hi, this is " + name + company + ". I'd like a cleaning walkthrough" + space + ".";
     }
     var service = d["Type of cleaning"] ? " (" + d["Type of cleaning"].toLowerCase() + ")" : "";
     var zip = d["ZIP code"] ? " in " + d["ZIP code"] : "";
-    return "Hi Geovana, this is " + name + ". I'd like a home cleaning quote" + service + zip + ".";
+    return "Hi, this is " + name + ". I'd like a home cleaning quote" + service + zip + ".";
   }
 
   // Save the form in the Google Sheet. sendBeacon survives the page handing off to the phone app.
@@ -67,7 +67,7 @@
     form.innerHTML =
       '<div class="form-done">' +
         '<div class="done-icon" aria-hidden="true">✓</div>' +
-        "<h3>Thanks" + (first ? ", " + escapeHtml(first) : "") + "! Calling Geovana now.</h3>" +
+        "<h3>Thanks" + (first ? ", " + escapeHtml(first) : "") + "! Calling Elite Prime Clean now.</h3>" +
         "<p>If the call didn’t start, tap below or dial " + PHONE_DISPLAY + ".</p>" +
         '<div class="done-actions">' +
           '<a class="btn btn-gold" href="tel:' + PHONE + '">Call ' + PHONE_DISPLAY + "</a>" +
