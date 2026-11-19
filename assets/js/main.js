@@ -1,16 +1,12 @@
 // Elite Prime Clean — small site helpers
 (function () {
   // ===== CONFIG =====
-  // Paste the Google Apps Script "Web app" URL here (see SETUP-PLANILHA.md).
-  var SHEETS_URL = "";
+  // Paste the Google Apps Script "Web app" URL here (see google-sheets/SETUP-PLANILHA.md).
+  // While it is empty, the form still opens the call; the details just aren't saved.
+  var SHEETS_URL = "https://script.google.com/macros/s/AKfycbz9t5Dt8BS5z7d3US_CDxZdWIK3bfhMuho8cXZS9heljnSemjJ7UVrp2nH6FtvHRJwJbQ/exec";
   var PHONE = "+19733916392";
   var PHONE_DISPLAY = "(973) 391-6392";
-  var CONTACT_EMAIL = "contact@eliteprimeclean.com";
-  // On phones, open the dialer with our number right after the form is saved.
-  var AUTO_OPEN_CALL_ON_MOBILE = true;
   // ==================
-
-  var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   document.querySelectorAll("[data-year]").forEach(function (el) {
     el.textContent = new Date().getFullYear();
@@ -18,7 +14,7 @@
 
   function smsLink(body) {
     // "?&body=" works on both iOS and Android
-    return "sms:" + PHONE + "?&body=" + encodeURIComponent(body);
+    return "sms:" + PHONE + (body ? "?&body=" + encodeURIComponent(body) : "");
   }
 
   function collect(form) {
@@ -34,31 +30,50 @@
 
   function smsMessage(type, d) {
     var name = d["Your name"] || "";
+    if (!name) return "";
     if (type === "Commercial") {
       var company = d["Company"] ? " from " + d["Company"] : "";
-      return "Hi, this is " + name + company + ". I just requested a walkthrough on your website.";
+      var space = d["Type of space"] ? " for a " + d["Type of space"].toLowerCase() : "";
+      return "Hi Geovana, this is " + name + company + ". I'd like a cleaning walkthrough" + space + ".";
     }
-    return "Hi, this is " + name + ". I just requested a home cleaning quote on your website.";
+    var service = d["Type of cleaning"] ? " (" + d["Type of cleaning"].toLowerCase() + ")" : "";
+    var zip = d["ZIP code"] ? " in " + d["ZIP code"] : "";
+    return "Hi Geovana, this is " + name + ". I'd like a home cleaning quote" + service + zip + ".";
   }
 
-  function showThanks(form, type, d, skipAutoCall) {
-    document.dispatchEvent(new CustomEvent("epc:lead", { detail: { type: type, source: d.source || "" } }));
+  // Save the form in the Google Sheet. sendBeacon survives the page handing off to the phone app.
+  function saveLead(type, d) {
+    if (!SHEETS_URL) return;
+    var payload = new URLSearchParams();
+    payload.append("Type", type);
+    payload.append("Page", location.pathname);
+    Object.keys(d).forEach(function (k) { payload.append(k, d[k]); });
+    var body = payload.toString();
+    var sent = false;
+    try {
+      sent = navigator.sendBeacon &&
+        navigator.sendBeacon(SHEETS_URL, new Blob([body], { type: "application/x-www-form-urlencoded" }));
+    } catch (err) {}
+    if (!sent) {
+      fetch(SHEETS_URL, {
+        method: "POST", mode: "no-cors", keepalive: true, body: body,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      }).catch(function () {});
+    }
+  }
+
+  function showCalling(form, type, d) {
     var first = (d["Your name"] || "").split(" ")[0];
-    var body = smsMessage(type, d);
     form.innerHTML =
       '<div class="form-done">' +
         '<div class="done-icon" aria-hidden="true">✓</div>' +
-        "<h3>Thanks" + (first ? ", " + escapeHtml(first) : "") + "! We got your request.</h3>" +
-        "<p>Want an answer right now? Give us a call.</p>" +
+        "<h3>Thanks" + (first ? ", " + escapeHtml(first) : "") + "! Calling Geovana now.</h3>" +
+        "<p>If the call didn’t start, tap below or dial " + PHONE_DISPLAY + ".</p>" +
         '<div class="done-actions">' +
           '<a class="btn btn-gold" href="tel:' + PHONE + '">Call ' + PHONE_DISPLAY + "</a>" +
-          '<a class="btn btn-outline" href="' + smsLink(body) + '">Or send a text</a>' +
+          '<a class="btn btn-outline" href="' + smsLink(smsMessage(type, d)) + '">Send a text instead</a>' +
         "</div>" +
       "</div>";
-    form.scrollIntoView({ behavior: "smooth", block: "center" });
-    if (isMobile && AUTO_OPEN_CALL_ON_MOBILE && !skipAutoCall) {
-      setTimeout(function () { window.location.href = "tel:" + PHONE; }, 1200);
-    }
   }
 
   function escapeHtml(s) {
@@ -68,56 +83,38 @@
   }
 
   document.querySelectorAll("form[data-quote-form]").forEach(function (form) {
+    var type = form.getAttribute("data-quote-form");
+
+    // "Call now": save the details, then open the phone app right away (same tap, so phones allow it).
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
-
-      var type = form.getAttribute("data-quote-form");
       var d = collect(form);
-      var btn = form.querySelector('button[type="submit"]');
+      saveLead(type, d);
+      document.dispatchEvent(new CustomEvent("epc:lead", { detail: { type: type, source: d.source || "" } }));
+      if (window.epcTrack) window.epcTrack("call_click", { location: "form: " + (d.source || ""), page: location.pathname });
+      window.location.href = "tel:" + PHONE;
+      showCalling(form, type, d);
+    });
 
-      // Sheet not connected yet: fall back to the visitor's email app.
-      if (!SHEETS_URL) {
-        var lines = Object.keys(d).filter(function (k) { return d[k]; }).map(function (k) { return k + ": " + d[k]; });
-        window.location.href = "mailto:" + CONTACT_EMAIL +
-          "?subject=" + encodeURIComponent(type + " cleaning quote request — " + (d["Your name"] || "")) +
-          "&body=" + encodeURIComponent(lines.join("\n"));
-        showThanks(form, type, d, true);
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = "Sending…";
-
-      var payload = new URLSearchParams();
-      payload.append("Type", type);
-      payload.append("Page", location.pathname);
-      Object.keys(d).forEach(function (k) { payload.append(k, d[k]); });
-
-      fetch(SHEETS_URL, { method: "POST", mode: "no-cors", body: payload })
-        .then(function () { showThanks(form, type, d); })
-        .catch(function () {
-          btn.disabled = false;
-          btn.textContent = "Try again";
-          alert("Sorry, something went wrong. Please call or text us at " + PHONE_DISPLAY + ".");
-        });
+    // "Prefer to send a message?": pre-write the text with whatever they already typed.
+    var sms = form.querySelector("[data-form-sms]");
+    if (sms) sms.addEventListener("click", function () {
+      sms.setAttribute("href", smsLink(smsMessage(type, collect(form))));
     });
   });
 })();
 
 // ===== Ads tracking, campaign capture, scroll reveal =====
 (function () {
-  // Sends an event to Google Ads / GA4 (gtag), Google Tag Manager (dataLayer) and Meta Pixel (fbq)
-  // if their snippets are installed in the page <head>. Without them, nothing happens.
+  // Events go ONLY to the dataLayer. Google Tag Manager (GTM-MZ9DWBHB) forwards them to
+  // GA4, Google Ads and Meta Pixel. Don't call gtag()/fbq() here too, or every event counts twice.
+  //   call_click    -> tap on any phone link, or "Call now" on a form
+  //   text_click    -> tap on any text (SMS) link
+  //   generate_lead -> form sent to the Google Sheet
   window.dataLayer = window.dataLayer || [];
   function track(name, params) {
-    params = params || {};
-    window.dataLayer.push(Object.assign({ event: name }, params));
-    if (typeof window.gtag === "function") window.gtag("event", name, params);
-    if (typeof window.fbq === "function") {
-      var fb = { call_click: "Contact", text_click: "Contact", generate_lead: "Lead" }[name];
-      if (fb) window.fbq("track", fb, params);
-    }
+    window.dataLayer.push(Object.assign({ event: name }, params || {}));
   }
   window.epcTrack = track;
 
