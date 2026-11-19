@@ -508,3 +508,22 @@ h1 .accent { background: linear-gradient(100deg, var(--gold-light), var(--gold) 
 .ba figcaption { padding: .7rem 1rem; font-size: .9rem; font-weight: 600; color: var(--ink); }
 .ba-tall { grid-column: 2; grid-row: 1 / span 2; }
 @media (max-width: 760px) { .ba-grid { grid-template-columns: 1fr; } .ba-tall { grid-column: auto; grid-row: auto; } }
+
+/* Home chooser: calmer cards (photos dimmer, less text) */
+.choice-commercial::before {
+  background:
+    linear-gradient(180deg, rgba(22,22,26,.55) 0%, rgba(22,22,26,.95) 72%),
+    url("../img/choose-commercial.jpg") center / cover no-repeat,
+    linear-gradient(160deg, #2b2a2f 0%, #16161a 70%);
+}
+.choice-residential::before {
+  background:
+    linear-gradient(180deg, rgba(22,22,26,.6) 0%, rgba(22,22,26,.95) 72%),
+    url("../img/choose-residential.jpg") center / cover no-repeat,
+    url("../img/team.webp") center 30% / cover no-repeat;
+}
+.choice p { margin-bottom: 1.4rem; }
+
+/* Home top: softer background (bubbles and sparkles barely there) */
+.chooser-page .bubbles { opacity: .3; }
+.chooser-intro .sparkle { opacity: .45; }
