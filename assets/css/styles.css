@@ -455,3 +455,7 @@ h1 .accent { background: linear-gradient(100deg, var(--gold-light), var(--gold) 
 .form-privacy { font-size: .75rem; color: var(--muted); text-align: center; margin: .5rem 0 0; }
 .form-privacy a { color: inherit; text-decoration: underline; }
 .form-note a { white-space: nowrap; }
+
+/* Photo slots: if the photo file isn't there yet, hide the slot instead of showing the
+   dashed placeholder (the <img onerror> removes itself, and :has() reacts). */
+.img-slot:not(:has(img)), .wide-photo:not(:has(img)) { display: none; }
