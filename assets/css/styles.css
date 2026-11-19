@@ -527,3 +527,15 @@ h1 .accent { background: linear-gradient(100deg, var(--gold-light), var(--gold) 
 /* Home top: softer background (bubbles and sparkles barely there) */
 .chooser-page .bubbles { opacity: .3; }
 .chooser-intro .sparkle { opacity: .45; }
+
+/* Home: client logo strip */
+.home-logos { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+.home-logos-label { display: block; text-align: center; font-size: .78rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem; }
+.home-logos-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; align-items: center; }
+.home-logos-row figure { margin: 0; height: 96px; display: grid; place-items: center; }
+.home-logos-row img { max-height: 80px; max-width: 70%; width: auto; height: auto; object-fit: contain; filter: grayscale(1); opacity: .7; transition: filter .3s ease, opacity .3s ease; }
+.home-logos-row figure:hover img { filter: none; opacity: 1; }
+@media (max-width: 620px) { .home-logos-row { grid-template-columns: 1fr 1fr; } }
+.home-logos-row figure { height: 130px; }
+.home-logos-row img { max-height: 130px; max-width: 92%; opacity: .8; }
+@media (max-width: 620px) { .home-logos-row figure { height: 110px; } .home-logos-row img { max-height: 110px; } }
