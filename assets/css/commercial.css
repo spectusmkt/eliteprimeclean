@@ -249,3 +249,14 @@
 /* Owner section without a photo yet: drop the empty frame and use one column */
 .framed:not(:has(img)) { display: none; }
 .owner:not(:has(img)) { grid-template-columns: 1fr; max-width: 820px; }
+
+/* Switching cleaners band */
+.switch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: end; }
+.switch-band .lead { color: #cfcbc2; margin-bottom: 1.6rem; }
+.switch-band .btn-call svg { width: 18px; height: 18px; }
+@media (max-width: 860px) { .switch-grid { grid-template-columns: 1fr; } }
+
+/* Hero photo: more visible on the right, dark behind the headline */
+.lx-hero .hero-bg { opacity: .55; }
+.lx-hero .hero-bg::after { background: linear-gradient(90deg, #101013 0%, rgba(16,16,19,.88) 40%, rgba(16,16,19,.45) 100%); }
+@media (max-width: 900px) { .lx-hero .hero-bg { opacity: .4; } .lx-hero .hero-bg::after { background: rgba(16,16,19,.8); } }

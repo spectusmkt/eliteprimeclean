@@ -459,3 +459,52 @@ h1 .accent { background: linear-gradient(100deg, var(--gold-light), var(--gold) 
 /* Photo slots: if the photo file isn't there yet, hide the slot instead of showing the
    dashed placeholder (the <img onerror> removes itself, and :has() reacts). */
 .img-slot:not(:has(img)), .wide-photo:not(:has(img)) { display: none; }
+
+/* ===== Google-style review cards (filled by assets/js/reviews.js) ===== */
+.g-reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.g-reviews-stack { grid-template-columns: 1fr; }
+@media (max-width: 900px) { .g-reviews { grid-template-columns: 1fr; } }
+.g-empty { display: none; }
+.g-review { background: #fff; border: 1px solid #dadce0; border-radius: 12px; padding: 1.1rem 1.2rem 1rem; font-family: Roboto, Arial, var(--sans); color: #3c4043; text-align: left; display: flex; flex-direction: column; }
+.g-review header { display: flex; align-items: center; gap: .75rem; margin-bottom: .6rem; }
+.g-avatar { width: 40px; height: 40px; border-radius: 50%; color: #fff; display: grid; place-items: center; font-weight: 500; font-size: 1.1rem; flex: none; }
+.g-review header b { display: block; color: #202124; font-weight: 500; font-size: .95rem; line-height: 1.3; }
+.g-review header small { display: block; color: #70757a; font-size: .78rem; }
+.g-rating { display: flex; align-items: center; gap: .5rem; margin-bottom: .45rem; }
+.g-stars { letter-spacing: 1px; font-size: .95rem; line-height: 1; }
+.g-stars .on { color: #fbbc04; }
+.g-stars .off { color: #dadce0; }
+.g-when { color: #70757a; font-size: .8rem; }
+.g-text { margin: 0; font-size: .92rem; line-height: 1.55; color: #3c4043; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+.g-review.open .g-text { display: block; -webkit-line-clamp: unset; overflow: visible; }
+.g-more { align-self: flex-start; background: none; border: 0; padding: .3rem 0 0; color: #1a73e8; font: 500 .85rem Roboto, Arial, sans-serif; cursor: pointer; }
+.g-review footer { margin-top: auto; padding-top: .8rem; color: #70757a; font-size: .75rem; }
+.g-summary { display: flex; align-items: center; gap: .5rem; color: var(--muted); font-weight: 500; }
+.g-all-row { margin: 1.2rem 0 0; }
+.g-all { color: var(--gold-dark); font-weight: 600; text-decoration: none; }
+.g-all:hover { text-decoration: underline; }
+.on-dark .g-all, .on-ink .g-all { color: var(--gold-light); }
+
+/* Airbnb / vacation rental band (residential) */
+.rental-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 5vw, 4.5rem); align-items: end; }
+.rental-band .lead { margin-bottom: 1rem; }
+.rental-note { color: #a9a59c; font-size: .92rem; margin: 0 0 1.5rem; }
+.rental-note a { color: var(--gold-light); font-weight: 600; }
+.rental-band .btn-call svg { width: 18px; height: 18px; }
+@media (max-width: 860px) { .rental-grid { grid-template-columns: 1fr; } }
+.rental-grid { align-items: start; }
+.rental-review { margin-top: 1.6rem; max-width: 520px; }
+.rental-band .lead + .btn-call { margin-top: .5rem; }
+
+/* Hero photos: show more of the photo on the right, keep the text side dark */
+.hero-bg { opacity: .6; }
+.hero-bg::after { background: linear-gradient(90deg, var(--ink) 0%, rgba(22,22,26,.88) 38%, rgba(22,22,26,.45) 100%); }
+@media (max-width: 900px) { .hero-bg { opacity: .4; } .hero-bg::after { background: rgba(22,22,26,.78); } }
+
+/* Before & after (residential) */
+.ba-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.25rem; align-items: start; }
+.ba { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.ba img { display: block; width: 100%; height: auto; }
+.ba figcaption { padding: .7rem 1rem; font-size: .9rem; font-weight: 600; color: var(--ink); }
+.ba-tall { grid-column: 2; grid-row: 1 / span 2; }
+@media (max-width: 760px) { .ba-grid { grid-template-columns: 1fr; } .ba-tall { grid-column: auto; grid-row: auto; } }
