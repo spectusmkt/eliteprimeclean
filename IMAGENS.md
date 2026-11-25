@@ -11,8 +11,8 @@ Tamanho do arquivo: até **400 KB** cada (ou me mande maior que eu comprimo).
 | # | Arquivo | Onde aparece | Tamanho (px) | Real ou IA? |
 |---|---|---|---|---|
 | 1 | ~~`geovana.jpg`~~ | Comercial e Residencial, seção da dona | — | **Pronto.** A pedido da Geovana, sem foto real: usamos o avatar ilustrado `assets/img/geovana-avatar.svg`. |
-| 2 | `residential-trust.jpg` | Residencial, "People you can trust" | 1600×1200 | **Real de preferência** (equipe trabalhando). Se for IA: só mãos/detalhes, sem rosto. |
-| 3 | `commercial-wide.jpg` | Comercial, ao lado da lista de serviços | 1600×1200 | **Real de preferência.** Se for IA: sem rostos visíveis. |
+| 2 | `residential-trust.jpg` | Residencial, ao lado da lista de serviços | 1600×1200 | **Pronto.** Foto de banco (Unsplash, licença gratuita): pia de cozinha sendo limpa, por everdrop GmbH. unsplash.com/photos/SqOMDOQb3ws |
+| 3 | `commercial-wide.jpg` | Comercial, ao lado da lista de serviços | 1600×1200 | **Pronto.** Foto de banco (Unsplash, licença gratuita): profissional aspirando escritório, por "web seo". unsplash.com/photos/CVcIMnH_7so |
 | 4 | `commercial-hero.jpg` | Comercial, fundo escurecido do topo | 1920×1080 | IA pode. |
 | 5 | `residential-hero.jpg` | Residencial, fundo escurecido do topo | 1920×1080 | IA pode. |
 | 6 | `choose-commercial.jpg` | Home, cartão "Commercial" | 1600×1200 | IA pode. |
