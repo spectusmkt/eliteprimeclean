@@ -107,14 +107,19 @@
 
 // ===== Ads tracking, campaign capture, scroll reveal =====
 (function () {
-  // Events go ONLY to the dataLayer. Google Tag Manager (GTM-MZ9DWBHB) forwards them to
-  // GA4, Google Ads and Meta Pixel. Don't call gtag()/fbq() here too, or every event counts twice.
+  // Events go to the dataLayer, and Google Tag Manager (GTM-MZ9DWBHB) forwards them to GA4 and Google Ads.
+  // The Meta Pixel (1668957268053094) is installed directly in each page <head>, so Meta events are sent here.
+  // If a Meta Pixel tag is ever added inside GTM, remove the fbq() call below, or every event counts twice.
   //   call_click    -> tap on any phone link, or "Call now" on a form
   //   text_click    -> tap on any text (SMS) link
   //   generate_lead -> form sent to the Google Sheet
   window.dataLayer = window.dataLayer || [];
   function track(name, params) {
     window.dataLayer.push(Object.assign({ event: name }, params || {}));
+    var meta = { call_click: "Contact", text_click: "Contact", generate_lead: "Lead" }[name];
+    if (meta && typeof window.fbq === "function") {
+      window.fbq("track", meta, { content_name: name, content_category: (params && (params.form_type || params.location)) || "" });
+    }
   }
   window.epcTrack = track;
 
