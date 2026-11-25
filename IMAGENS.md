@@ -10,7 +10,7 @@ Tamanho do arquivo: até **400 KB** cada (ou me mande maior que eu comprimo).
 
 | # | Arquivo | Onde aparece | Tamanho (px) | Real ou IA? |
 |---|---|---|---|---|
-| 1 | `geovana.jpg` | Comercial, seção da dona | 1200×1500 (vertical) | **Só real.** Foto dela, de preferência com a equipe ou num cliente. |
+| 1 | ~~`geovana.jpg`~~ | Comercial e Residencial, seção da dona | — | **Pronto.** A pedido da Geovana, sem foto real: usamos o avatar ilustrado `assets/img/geovana-avatar.svg`. |
 | 2 | `residential-trust.jpg` | Residencial, "People you can trust" | 1600×1200 | **Real de preferência** (equipe trabalhando). Se for IA: só mãos/detalhes, sem rosto. |
 | 3 | `commercial-wide.jpg` | Comercial, ao lado da lista de serviços | 1600×1200 | **Real de preferência.** Se for IA: sem rostos visíveis. |
 | 4 | `commercial-hero.jpg` | Comercial, fundo escurecido do topo | 1920×1080 | IA pode. |
